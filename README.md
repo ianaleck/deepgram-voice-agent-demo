@@ -17,6 +17,14 @@ Table of contents:
 
 - [Node v20](https://nodejs.org/en/download/) or higher (though I recommend installing it through [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
 - [yarn](https://classic.yarnpkg.com/en/docs/install)
+- [Next JS](https://nextjs.org/docs/app/getting-started/installation) Although the docs use npm, you can easily switch the commands to Yarn. For example:
+
+```
+# Install Next.js, React, and React DOM using Yarn
+yarn add next react react-dom
+```
+
+Then confirm "dev": "next dev" is in your scripts section in package.json.
 
 ## Getting started
 
