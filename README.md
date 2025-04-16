@@ -39,7 +39,7 @@ Create a `.env` file in the root of the project and add the following:
 DEEPGRAM_API_KEY=<your-deepgram-api-key>
 ```
 
-> **_Note ℹ️_**: When creating the API Key make sure to select "Member" as the role and not "Default" so that the API Key has permissions to create new API Keys.
+> **_Note_ ℹ️**: When creating the API Key make sure to select "Member" as the role and not "Default" so that the API Key has permissions to create new API Keys.
 
 See `sample.env.local` for more details.
 
