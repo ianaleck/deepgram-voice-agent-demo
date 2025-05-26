@@ -44,7 +44,7 @@ export const App = ({
     startMicrophone,
   } = useMicrophone();
   const { socket, connectToDeepgram, socketState, rateLimited } = useDeepgram();
-  const { voice, instructions, applyParamsToConfig } = useStsQueryParams();
+  const { voice, prompt, applyParamsToConfig } = useStsQueryParams();
   const audioContext = useRef(null);
   const agentVoiceAnalyser = useRef(null);
   const userVoiceAnalyser = useRef(null);
@@ -52,7 +52,7 @@ export const App = ({
   const [data, setData] = useState();
   const [isInitialized, setIsInitialized] = useState(requiresUserActionToInitialize ? false : null);
   const previousVoice = usePrevious(voice);
-  const previousInstructions = usePrevious(instructions);
+  const previousPrompt = usePrevious(prompt);
   const scheduledAudioSources = useRef([]);
   const pathname = usePathname();
 
@@ -254,19 +254,24 @@ export const App = ({
     if (previousVoice && previousVoice !== voice && socket && socketState === 1) {
       sendSocketMessage(socket, {
         type: "UpdateSpeak",
-        model: voice,
+        speak: {
+          provider: {
+            type: "deepgram",
+            model: voice,
+          },
+        },
       });
     }
   }, [voice, socket, socketState, previousVoice]);
 
   useEffect(() => {
-    if (previousInstructions !== instructions && socket && socketState === 1) {
+    if (previousPrompt !== prompt && socket && socketState === 1) {
       sendSocketMessage(socket, {
-        type: "UpdateInstructions",
-        instructions: `${defaultStsConfig.agent.think.instructions}\n${instructions}`,
+        type: "UpdatePrompt",
+        prompt: `${defaultStsConfig.agent.think.prompt}\n${prompt}`,
       });
     }
-  }, [defaultStsConfig, previousInstructions, instructions, socket, socketState]);
+  }, [defaultStsConfig, previousPrompt, prompt, socket, socketState]);
 
   /**
    * Manage responses to incoming data from WebSocket.

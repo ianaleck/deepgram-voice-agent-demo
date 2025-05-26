@@ -9,50 +9,47 @@ export const useStsQueryParams = () => {
 
   const [params, setParams] = useState<{
     voice: string;
-    instructions: string | null;
-    provider: string | null;
-    model: string | null;
-    temp: string | null;
-    rep_penalty: string | null;
+    prompt: string | null;
+    think_provider: string | null;
+    think_model: string | null;
   }>({
     voice: searchParams.get("voice") || defaultVoice.canonical_name,
-    instructions: searchParams.get("instructions"),
-    provider: searchParams.get("provider"),
-    model: searchParams.get("model"),
-    temp: searchParams.get("temp"),
-    rep_penalty: searchParams.get("rep_penalty"),
+    prompt: searchParams.get("prompt"),
+    think_provider: searchParams.get("think_provider"),
+    think_model: searchParams.get("think_model"),
   });
 
   useEffect(() => {
     setParams({
       voice: searchParams.get("voice") || defaultVoice.canonical_name,
-      instructions: searchParams.get("instructions"),
-      provider: searchParams.get("provider"),
-      model: searchParams.get("model"),
-      temp: searchParams.get("temp"),
-      rep_penalty: searchParams.get("rep_penalty"),
+      prompt: searchParams.get("prompt"),
+      think_provider: searchParams.get("think_provider"),
+      think_model: searchParams.get("think_model"),
     });
   }, [searchParams]);
 
   const applyParamsToConfig = useCallback(
     (config: StsConfig) => {
-      const { voice, instructions, provider, model, temp, rep_penalty } = params;
+      const { voice, prompt, think_provider, think_model } = params;
+
       return {
         ...config,
         agent: {
           ...config.agent,
           think: {
             ...config.agent.think,
-            ...(provider && model && { provider: { type: provider }, model }),
-            ...(instructions && {
-              instructions: `${config.agent.think.instructions}\n${instructions}`,
+            ...(think_provider &&
+              think_model && { provider: { type: think_provider, model: think_model } }),
+            ...(prompt && {
+              prompt: `${config.agent.think.prompt}\n${prompt}`,
             }),
           },
           speak: {
             ...config.agent.speak,
-            ...(voice && { model: voice }),
-            ...(temp && { temp: parseFloat(temp) }),
-            ...(rep_penalty && { rep_penalty: parseFloat(rep_penalty) }),
+            provider: {
+              type: "deepgram",
+              ...(voice ? { model: voice } : { model: config.agent.speak.provider.model }),
+            },
           },
         },
       };
@@ -73,8 +70,8 @@ export const useStsQueryParams = () => {
     [router],
   );
 
-  const memoizedUpdateInstructionsUrlParam = useCallback(
-    (text: string | null) => updateUrlParam("instructions", text),
+  const memoizedUpdatePromptUrlParam = useCallback(
+    (text: string | null) => updateUrlParam("prompt", text),
     [updateUrlParam],
   );
 
@@ -86,7 +83,7 @@ export const useStsQueryParams = () => {
   return {
     ...params,
     applyParamsToConfig,
-    updateInstructionsUrlParam: memoizedUpdateInstructionsUrlParam,
+    updatePromptUrlParam: memoizedUpdatePromptUrlParam,
     updateVoiceUrlParam: memoizedUpdateVoiceUrlParam,
   };
 };
