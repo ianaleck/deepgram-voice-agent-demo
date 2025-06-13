@@ -31,45 +31,41 @@ export interface AudioConfig {
     encoding: string;
     sample_rate: number;
     container?: string;
-    buffer_size?: number;
   };
 }
 
 export interface AgentConfig {
-  listen: { model: string };
-  speak: {
-    model: string;
-    temp?: number;
-    rep_penalty?: number;
-  };
+  listen: { provider: { type: "deepgram"; model: string } };
   think: {
-    provider: { type: string; fallback_to_groq?: boolean };
-    model: string;
-    instructions: string;
+    provider: { type: string; model: string };
+    prompt: string;
     functions?: LlmFunction[];
   };
+  speak: SpeakConfig;
+  greeting?: string;
 }
 
-export interface ContextConfig {
-  messages: { role: string; content: string }[];
-  replay: boolean;
+export interface SpeakConfig {
+  provider: { type: "deepgram"; model: string };
 }
 
 export interface StsConfig {
-  type: string;
+  type: "Settings";
   audio: AudioConfig;
   agent: AgentConfig;
-  context?: ContextConfig;
+  language?: string;
+  experimental?: boolean;
 }
 
 export interface LlmFunction {
   name: string;
   description: string;
-  url: string;
-  method: string;
-  headers: Header[];
-  key?: string;
   parameters: LlmParameterObject | Record<string, never>;
+  endpoint: {
+    url: string;
+    headers: Record<string, string>;
+    method: string;
+  };
 }
 
 export type LlmParameter = LlmParameterScalar | LlmParameterObject;
@@ -89,11 +85,6 @@ export interface LlmParameterScalar extends LlmParameterBase {
   type: "string" | "integer";
 }
 
-export interface Header {
-  key: string;
-  value: string;
-}
-
 export interface Voice {
   name: string;
   canonical_name: string;
@@ -107,9 +98,9 @@ export interface Voice {
 }
 
 export type DGMessage =
-  | { type: "SettingsConfiguration"; audio: AudioConfig; agent: AgentConfig }
-  | { type: "UpdateInstructions"; instructions: string }
-  | { type: "UpdateSpeak"; model: string }
+  | { type: "Settings"; audio: AudioConfig; agent: AgentConfig }
+  | { type: "UpdatePrompt"; prompt: string }
+  | { type: "UpdateSpeak"; speak: SpeakConfig }
   | { type: "KeepAlive" };
 
 export const withBasePath = (path: string): string => {

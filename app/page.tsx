@@ -26,16 +26,14 @@ import { useDeepgram } from "./context/DeepgramContextProvider";
 import BehindTheScenes from "./components/BehindTheScenes";
 
 const DesktopMenuItems = () => {
-  const { instructions } = useStsQueryParams();
+  const { prompt } = useStsQueryParams();
   return (
     <>
       <PopupButton
         buttonIcon={<PencilIcon />}
-        buttonText={
-          <span>Prompt {instructions && <span className="text-green-spring">*</span>}</span>
-        }
+        buttonText={<span>Prompt {prompt && <span className="text-green-spring">*</span>}</span>}
         popupContent={<InstructionInput className="w-96" focusOnMount />}
-        tooltipText={instructions ? "Using your custom prompt. Click to edit." : null}
+        tooltipText={prompt ? "Using your custom prompt. Click to edit." : null}
       />
     </>
   );

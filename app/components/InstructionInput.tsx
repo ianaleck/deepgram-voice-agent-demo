@@ -7,15 +7,15 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const InstructionInput: FC<Props> = ({ focusOnMount = false, ...rest }) => {
-  const { instructions, updateInstructionsUrlParam } = useStsQueryParams();
-  const [text, setText] = useState(instructions);
+  const { prompt, updatePromptUrlParam } = useStsQueryParams();
+  const [text, setText] = useState(prompt);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const textRef = useRef(text);
   const autofocus = useRef(focusOnMount);
 
   const handleBlur = () => {
-    if (text !== instructions) {
-      updateInstructionsUrlParam(text);
+    if (text !== prompt) {
+      updatePromptUrlParam(text);
     }
   };
 
@@ -31,9 +31,9 @@ const InstructionInput: FC<Props> = ({ focusOnMount = false, ...rest }) => {
 
   useEffect(() => {
     return () => {
-      updateInstructionsUrlParam(textRef.current);
+      updatePromptUrlParam(textRef.current);
     };
-  }, [updateInstructionsUrlParam]);
+  }, [updatePromptUrlParam]);
 
   return (
     <div {...rest}>
@@ -42,8 +42,8 @@ const InstructionInput: FC<Props> = ({ focusOnMount = false, ...rest }) => {
           <PencilIcon />
           Prompt
         </div>
-        {instructions && (
-          <div className="text-xs text-gray-450 mt-3">{instructions && "* Prompt is user-set"}</div>
+        {prompt && (
+          <div className="text-xs text-gray-450 mt-3">{prompt && "* Prompt is user-set"}</div>
         )}
         <textarea
           ref={inputRef}

@@ -13,16 +13,16 @@ const audioConfig: AudioConfig = {
 };
 
 const baseConfig = {
-  type: "SettingsConfiguration",
+  type: "Settings" as const,
   audio: audioConfig,
   agent: {
-    listen: { model: "nova-2" },
-    speak: { model: "aura-asteria-en" },
+    listen: { provider: { type: "deepgram" as const, model: "nova-3" } },
+    speak: { provider: { type: "deepgram" as const, model: "aura-asteria-en" } },
     think: {
-      provider: { type: "open_ai" },
-      model: "gpt-4o",
+      provider: { type: "open_ai" as const, model: "gpt-4o" },
     },
   },
+  experimental: true,
 };
 
 export const stsConfig: StsConfig = {
@@ -31,8 +31,7 @@ export const stsConfig: StsConfig = {
     ...baseConfig.agent,
     think: {
       ...baseConfig.agent.think,
-      provider: { type: "open_ai", fallback_to_groq: true },
-      instructions: `
+      prompt: `
                 ## Base instructions
                 You are a helpful voice assistant made by Deepgram's engineers.
                 Respond in a friendly, human, conversational manner.

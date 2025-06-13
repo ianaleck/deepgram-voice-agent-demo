@@ -23,7 +23,7 @@ enum Expansion {
 const { Closed, Opening, Open, Closing } = Expansion;
 
 const MobileMenu: FC<Props> = ({ hideInstructionInput, className }) => {
-  const { instructions } = useStsQueryParams();
+  const { prompt } = useStsQueryParams();
   const [expansion, setExpansion] = useState<Expansion>(Closed);
   const closeButton = useRef<HTMLButtonElement>(null);
 
@@ -47,9 +47,7 @@ const MobileMenu: FC<Props> = ({ hideInstructionInput, className }) => {
         onClick={() => setExpansion(Opening)}
       >
         <BarsIcon />
-        {instructions && (
-          <span className="absolute right-2 top-1 text-sm text-green-spring">*</span>
-        )}
+        {prompt && <span className="absolute right-2 top-1 text-sm text-green-spring">*</span>}
       </button>
       {expansion !== Closed && (
         <PopupBody onExit={() => setExpansion(Closing)}>
