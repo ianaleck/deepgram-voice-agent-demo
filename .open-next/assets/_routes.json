@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "include": [
+    "/agent",
+    "/agent/",
+    "/agent/api/*",
+    "/agent/_next/image*"
+  ],
+  "exclude": [
+    "/agent/_next/static/css/*",
+    "/agent/_next/static/media/*"
+  ]
+}

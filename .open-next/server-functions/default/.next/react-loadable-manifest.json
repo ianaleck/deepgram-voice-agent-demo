@@ -1,0 +1,14 @@
+{
+  "app/components/AnimatedBackground.js -> @lottiefiles/react-lottie-player": {
+    "id": 9762,
+    "files": [
+      "static/chunks/8627a13e.afac1dc8b889d265.js"
+    ]
+  },
+  "app/components/App.js -> ./AnimationManager": {
+    "id": 6079,
+    "files": [
+      "static/chunks/79.a5fae0eef07b5dc7.js"
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+name = "agent-demo"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".open-next/assets"
+
+[env.production.vars]
+API_KEY_STRATEGY = "provided"
+DEEPGRAM_API_KEY = "2e02d835716495cd0e50c81cfe5d2cee948a0dce"
+
+[env.preview.vars]
+API_KEY_STRATEGY = "provided"
+DEEPGRAM_API_KEY = "2e02d835716495cd0e50c81cfe5d2cee948a0dce"

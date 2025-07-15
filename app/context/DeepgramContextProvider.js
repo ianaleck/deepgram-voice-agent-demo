@@ -23,27 +23,67 @@ const DeepgramContextProvider = ({ children }) => {
 
     setSocketState(0); // connecting
 
-    const newSocket = new WebSocket("wss://agent.deepgram.com/v1/agent/converse", [
-      "bearer",
-      await getAuthToken(),
-    ]);
+    console.log("🔌 Starting WebSocket connection...");
+    const authToken = await getAuthToken();
+    console.log("🎫 Auth token for WebSocket:", authToken);
+    
+    const wsUrl = "wss://agent.deepgram.com/v1/agent/converse";
+    const protocols = ["bearer", authToken];
+    console.log("🌐 WebSocket URL:", wsUrl);
+    console.log("📝 WebSocket protocols:", protocols);
+
+    const newSocket = new WebSocket(wsUrl, protocols);
+    console.log("🚀 WebSocket created, ready state:", newSocket.readyState);
 
     const onOpen = () => {
       setSocketState(1); // connected
       setReconnectAttempts(0); // reset reconnect attempts after a successful connection
-      console.log("WebSocket connected.");
+      console.log("✅ WebSocket connected successfully!");
+      console.log("🔗 WebSocket ready state:", newSocket.readyState);
       keepAlive.current = setInterval(sendKeepAliveMessage(newSocket), 10000);
     };
 
     const onError = (err) => {
       setSocketState(2); // error
-      console.error("Websocket error", err);
+      console.error("❌ WebSocket error details:", err);
+      console.error("🔗 WebSocket ready state:", newSocket.readyState);
+      console.error("🌐 WebSocket URL:", newSocket.url);
+      console.error("📝 WebSocket protocol:", newSocket.protocol);
     };
 
-    const onClose = () => {
+    const onClose = (event) => {
       clearInterval(keepAlive.current);
       setSocketState(3); // closed
-      console.info("WebSocket closed. Attempting to reconnect...");
+      console.error("🔌 WebSocket closed. Details:");
+      console.error("   Code:", event.code);
+      console.error("   Reason:", event.reason);
+      console.error("   Was Clean:", event.wasClean);
+      console.error("   Ready State:", newSocket.readyState);
+      
+      // Common WebSocket close codes
+      const closeCodes = {
+        1000: "Normal closure",
+        1001: "Going away",
+        1002: "Protocol error",
+        1003: "Unsupported data",
+        1004: "Reserved",
+        1005: "No status received",
+        1006: "Abnormal closure",
+        1007: "Invalid frame payload data",
+        1008: "Policy violation",
+        1009: "Message too big",
+        1010: "Mandatory extension",
+        1011: "Internal server error",
+        1015: "TLS handshake failure",
+        4001: "Unauthorized",
+        4003: "Forbidden",
+        4008: "Rate limited",
+        4009: "Conflict"
+      };
+      
+      console.error("   Close Code Meaning:", closeCodes[event.code] || "Unknown");
+      
+      console.info("🔄 Attempting to reconnect in 3 seconds...");
       setTimeout(connectToDeepgram, 3000); // reconnect after 3 seconds
       setReconnectAttempts((attempts) => attempts + 1);
     };
